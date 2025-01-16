@@ -38,11 +38,10 @@ $(window).bind('load', function () {
         c2Container = $('#c2-container'),
         c2 = document.getElementById('c2'),
         cx = c.getContext('2d'),
-        c2x = c2.getContext('2d'),
-        particleIndex = 0,
-        particles = {},
-        particleNum = 1,
-        particlesLoaded = false;
+        c2x = c2.getContext('2d');
+
+    // Declare Particle constructors globally
+    var Particle, Particle2;
 
     c.width = $('#c').outerWidth();
     c.height = $('#c').outerHeight();
@@ -55,13 +54,14 @@ $(window).bind('load', function () {
     c2x.fillStyle = 'rgba(0,0,0,1)';
     c2x.fillRect(0, 0, c2.width, c2.height);
 
-    function particleFactory(thisCanvas, thisContext, thisParticleName, thisCanvasFunction) {
+    function particleFactory(thisCanvas, thisContext, ParticleConstructor) {
         var particleIndex = 0,
             particles = {},
             particleNum = 2,
             particlesLoaded = false;
 
-        thisParticleName = function () {
+        // Define the particle constructor
+        ParticleConstructor = function () {
             this.r = 8;
             this.rStart = this.r;
             this.rIncrement = this.r * -0.01;
@@ -83,9 +83,10 @@ $(window).bind('load', function () {
             particleIndex++;
             particles[particleIndex] = this;
             this.id = particleIndex;
-        }
+        };
 
-        thisParticleName.prototype.draw = function () {
+        // Define the draw method
+        ParticleConstructor.prototype.draw = function () {
             if ((!this.originTriggered) && (app.mouseX != null)) {
                 this.originTriggered = true;
                 this.x = app.mouseX;
@@ -121,16 +122,17 @@ $(window).bind('load', function () {
             if (this.r <= 0) {
                 delete particles[this.id];
             }
-        }
+        };
 
-        thisCanvasFunction = function () {
+        // Animation function
+        function animate() {
             thisContext.globalCompositeOperation = 'source-over';
             thisContext.fillStyle = 'rgba(0,0,0,1)';
             thisContext.fillRect(0, 0, thisCanvas.width, thisCanvas.height);
             
             if (!particlesLoaded) {
                 for (var i = 0; i < particleNum; i++) {
-                    new thisParticleName();
+                    new ParticleConstructor();
                 }
             }
             
@@ -138,9 +140,13 @@ $(window).bind('load', function () {
             for (var i in particles) {
                 particles[i].draw();
             }
+            
+            requestAnimationFrame(animate);
         }
         
-        setInterval(thisCanvasFunction, 15);
+        animate();
+        
+        return ParticleConstructor;
     }
 
     $(window).resize(function initial() {
@@ -152,8 +158,9 @@ $(window).bind('load', function () {
         return initial;
     }());
 
-    particleFactory(c, cx, Particle, canvas);
-    particleFactory(c2, c2x, Particle2, canvas2);
+    // Create particle systems
+    Particle = particleFactory(c, cx, Particle);
+    Particle2 = particleFactory(c2, c2x, Particle2);
 
     gsap.set(c2Container, {
         transformOrigin: 'center bottom',
