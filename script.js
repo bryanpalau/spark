@@ -71,13 +71,13 @@ $(window).bind('load', function () {
     particleFactory(c, cx);
     particleFactory(c2, c2x);
 
-    TweenMax.set('#c2-container', {
+    gsap.set('#c2-container', {
         transformOrigin: 'center bottom',
         scaleY: -1,
         opacity: 1
     });
 
-    TweenMax.set(c2, {
+    gsap.set(c2, {
         filter: 'blur(10px)'
     });
 

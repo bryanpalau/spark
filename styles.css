@@ -27,7 +27,7 @@ li {
     height: 100vh;
     position: relative;
     float: left;
-    opacity: 0;
+    opacity: 1; /* Changed from 0 to 1 to make the effect visible */
 }
 
 #c-container,
