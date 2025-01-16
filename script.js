@@ -7,32 +7,6 @@ $(window).bind('load', function () {
         return Math.floor(Math.random() * (max - min) + min);
     };
 
-    var app = {
-        init: function () {
-            this.cacheDOM();
-            this.style();
-        },
-        cacheDOM: function () {
-            this.container = $('#container');
-            this.mouseX = null;
-            this.mouseY = null;
-        },
-        style: function () {
-            $(window).resize(function initial() {
-                TweenMax.set(app.container, {
-                    opacity: 1
-                });
-                return initial;
-            }());
-        },
-        cursorEvents: function (e) {
-            app.mouseX = e.clientX;
-            app.mouseY = e.clientY;
-        }
-    };
-
-    app.init();
-
     var c = document.getElementById('c'),
         c2 = document.getElementById('c2'),
         cx = c.getContext('2d'),
@@ -44,16 +18,10 @@ $(window).bind('load', function () {
     c2.width = $('#c2').outerWidth();
     c2.height = $('#c2').outerHeight();
 
-    // INITIAL CANVAS DRAW
-    cx.fillStyle = 'rgba(0,0,0,1)';
-    cx.fillRect(0, 0, c.width, c.height);
-    c2x.fillStyle = 'rgba(0,0,0,1)';
-    c2x.fillRect(0, 0, c2.width, c2.height);
-
     function particleFactory(thisCanvas, thisContext) {
         var particleIndex = 0,
             particles = {},
-            particleNum = 2;
+            particleNum = 10;
 
         function Particle() {
             this.r = 8;
@@ -82,7 +50,7 @@ $(window).bind('load', function () {
             }
         };
 
-        const renderParticles = function () {
+        function renderParticles() {
             thisContext.fillStyle = 'rgba(0,0,0,0.1)';
             thisContext.fillRect(0, 0, thisCanvas.width, thisCanvas.height);
 
@@ -95,12 +63,11 @@ $(window).bind('load', function () {
             }
 
             raf(renderParticles);
-        };
+        }
 
         raf(renderParticles);
     }
 
-    // Create particle effects for both canvases
     particleFactory(c, cx);
     particleFactory(c2, c2x);
 
