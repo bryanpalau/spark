@@ -32,9 +32,7 @@ $(window).bind('load', function () {
 
     app.init();
 
-    var cContainer = $('#c-container'),
-        c = document.getElementById('c'),
-        c2Container = $('#c2-container'),
+    var c = document.getElementById('c'),
         c2 = document.getElementById('c2'),
         cx = c.getContext('2d'),
         c2x = c2.getContext('2d');
@@ -51,12 +49,12 @@ $(window).bind('load', function () {
     c2x.fillStyle = 'rgba(0,0,0,1)';
     c2x.fillRect(0, 0, c2.width, c2.height);
 
-    function particleFactory(thisCanvas, thisContext, thisParticleName, thisCanvasFunction) {
+    function particleFactory(thisCanvas, thisContext) {
         var particleIndex = 0,
             particles = {},
-            particleNum = 2;
+            particleNum = 20; // Increased number of particles for better effect
 
-        thisParticleName = function () {
+        function Particle() {
             this.r = 8;
             this.x = thisCanvas.width / 2;
             this.y = thisCanvas.height / 2;
@@ -67,9 +65,9 @@ $(window).bind('load', function () {
             particleIndex++;
             particles[particleIndex] = this;
             this.id = particleIndex;
-        };
+        }
 
-        thisParticleName.prototype.draw = function () {
+        Particle.prototype.draw = function () {
             thisContext.fillStyle = this.color;
             thisContext.beginPath();
             thisContext.arc(this.x, this.y, this.r, 0, Math.PI * 2);
@@ -83,7 +81,7 @@ $(window).bind('load', function () {
             }
         };
 
-        thisCanvasFunction = function () {
+        function renderParticles() {
             thisContext.fillStyle = 'rgba(0,0,0,0.1)';
             thisContext.fillRect(0, 0, thisCanvas.width, thisCanvas.height);
 
@@ -92,18 +90,19 @@ $(window).bind('load', function () {
             }
 
             if (Object.keys(particles).length < particleNum) {
-                new thisParticleName();
+                new Particle();
             }
 
-            raf(thisCanvasFunction);
-        };
-        raf(thisCanvasFunction);
+            raf(renderParticles);
+        }
+
+        raf(renderParticles);
     }
 
-    particleFactory(c, cx, "Particle", canvas);
-    particleFactory(c2, c2x, "Particle2", canvas2);
+    particleFactory(c, cx);
+    particleFactory(c2, c2x);
 
-    TweenMax.set(c2Container, {
+    TweenMax.set('#c2-container', {
         transformOrigin: 'center bottom',
         scaleY: -1,
         opacity: 1
@@ -113,15 +112,10 @@ $(window).bind('load', function () {
         filter: 'blur(10px)'
     });
 
-    $(window).resize(function initial() {
-        window.addEventListener('mousemove', app.cursorEvents, false);
-
+    $(window).resize(function () {
         c.width = $('#c').outerWidth();
         c.height = $('#c').outerHeight();
-
         c2.width = $('#c2').outerWidth();
         c2.height = $('#c2').outerHeight();
-
-        return initial;
-    }());
+    });
 });
