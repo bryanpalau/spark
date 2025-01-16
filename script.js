@@ -82,6 +82,7 @@ $(window).bind('load', function () {
     });
 
     $(window).resize(function () {
+        // Fixed: Using the correct canvas variables c and c2 instead of undefined canvas
         c.width = $('#c').outerWidth();
         c.height = $('#c').outerHeight();
         c2.width = $('#c2').outerWidth();
