@@ -51,7 +51,7 @@ $(window).bind('load', function () {
     c2x.fillStyle = 'rgba(0,0,0,1)';
     c2x.fillRect(0, 0, c2.width, c2.height);
 
-    function particleFactory(thisCanvas, thisContext, thisParticleName, thisCanvasFunction) {
+    function particleFactory(thisCanvas, thisContext, thisParticleName) {
         var particleIndex = 0,
             particles = {},
             particleNum = 2;
@@ -83,7 +83,7 @@ $(window).bind('load', function () {
             }
         };
 
-        thisCanvasFunction = function () {
+        const renderParticles = function () {
             thisContext.fillStyle = 'rgba(0,0,0,0.1)';
             thisContext.fillRect(0, 0, thisCanvas.width, thisCanvas.height);
 
@@ -95,13 +95,14 @@ $(window).bind('load', function () {
                 new thisParticleName();
             }
 
-            raf(thisCanvasFunction);
+            raf(renderParticles);
         };
-        raf(thisCanvasFunction);
+        raf(renderParticles);
     }
 
-    particleFactory(c, cx, "Particle", canvas);
-    particleFactory(c2, c2x, "Particle2", canvas2);
+    // Create particle effects for both canvases
+    particleFactory(c, cx, "Particle");
+    particleFactory(c2, c2x, "Particle2");
 
     TweenMax.set(c2Container, {
         transformOrigin: 'center bottom',
